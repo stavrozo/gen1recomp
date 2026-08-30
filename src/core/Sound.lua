@@ -174,6 +174,12 @@ end
 
 function Sound.rate() return rate end
 
+local function applyPitch(src, base)
+  if not src then return src end
+  pcall(src.setPitch, src, base or 1)
+  return src
+end
+
 local function applyRate(src, base)
   if not src then return src end
   pcall(src.setPitch, src, (base or 1) * rate)
@@ -209,7 +215,7 @@ local function playPath(data, key, def, pitch, tempo, plain)
     src = s
   end
   pcall(src.stop, src)
-  applyRate(src, type(def) == "table" and def.pitch or 1)
+  applyPitch(src, type(def) == "table" and def.pitch or 1)
   pcall(src.play, src)
   return src
 end
@@ -444,6 +450,7 @@ local function startSfx(data, name, def)
   local src = playPath(data, name, def)
   if not src then return end
   if ducks(data, name, def) then
+    applyRate(src, type(def) == "table" and def.pitch or 1)
     require("src.core.Music").duckForFanfare(src)
   end
   played("sfx", name)
@@ -708,7 +715,7 @@ function Sound.playPikaCry(data, n)
     src = s
   end
   pcall(src.stop, src)
-  applyRate(src, 1)
+  applyPitch(src, 1)
   pcall(src.play, src)
   played("cry", "PIKACHU_PCM_" .. n, "PIKACHU")
   return src
@@ -750,7 +757,7 @@ function Sound.playCry(data, species, pikaClip)
     src = s
   end
   pcall(src.stop, src)
-  applyRate(src, 1)
+  applyPitch(src, 1)
   pcall(src.play, src)
   played("cry", species, species)
   return src
@@ -769,7 +776,7 @@ end
 function Sound.playMoveCry(data, species, tempoMod)
   local src = Sound.playCry(data, species)
   if src and tempoMod and tempoMod ~= 0x80 then
-    applyRate(src, 256 / (128 + tempoMod))
+    applyPitch(src, 256 / (128 + tempoMod))
   end
   return src
 end
