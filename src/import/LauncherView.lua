@@ -249,6 +249,7 @@ end
 
 function LauncherView.touchpressed(imp, id, x, y)
   if not imp._flex then return end
+  Kit._ringShown = false
   imp._touchAt = imp._touchAt or {}
   imp._touchAt[tostring(id)] = {
     x = x, y = y, started = love.timer.getTime(),
