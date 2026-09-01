@@ -25,11 +25,13 @@ package.loaded["src.core.Music"] = {
 local Fixtures = require("tests.modkit.fixtures")
 local Bag = require("src.inventory.Bag")
 local BagMenu = require("src.ui.BagMenu")
+local BattleState = require("src.battle.BattleState")
 local EvolutionState = require("src.ui.EvolutionState")
 local PartyMenu = require("src.ui.PartyMenu")
 local Pokemon = require("src.pokemon.Pokemon")
 local StateStack = require("src.core.StateStack")
 local TextBox = require("src.render.TextBox")
+local StatBox = BattleState.StatBox
 
 local Data = Fixtures.fresh()
 require("src.render.Font").load(Data)
@@ -132,7 +134,7 @@ check(isTextBox(levelBox), "the grew-to-level line opened")
 check(finishPromptBox(game, levelBox), "the level line completed")
 
 local stat = game.stack:top()
-check(stat and stat.statBox, "the stat box followed the level line")
+check(getmetatable(stat) == StatBox, "the stat box followed the level line")
 tap(game, "a")
 
 local intro = game.stack:top()
